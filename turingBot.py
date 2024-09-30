@@ -21,7 +21,14 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 bot.remove_command('help')  # Override default help command
 
-wheel_options = ['🎉 Terraria', '🎉 Dota', '🎉 HOK', '🎉 Minecraft', '🔄 Entah']
+wheel_options = ['🎉 Terraria', '🎉 Dota', '🎉 HOK', '🎉 Minecraft']
+
+game_images = {
+    '🎉 Terraria': 'images/terraria.jpeg',
+    '🎉 Dota': 'images/dota.png',
+    '🎉 HOK': 'images/hok.webp',
+    '🎉 Minecraft': 'images/minecraft.jpeg'
+}
 
 allowed_names = {name: obj for name, obj in math.__dict__.items() if not name.startswith("__")}
 
@@ -31,20 +38,25 @@ async def on_ready():
 
 @bot.command()
 async def spin(ctx):
-    spin_msg = await ctx.send("🎡 Sedang gacha...")
+    spin_msg = await ctx.send(file=discord.File("gachabox.gif"))
 
     for _ in range(10):
         spinning_result = random.choice(wheel_options)
-        await spin_msg.edit(content=f"🎡 Sedang gacha... {spinning_result}")
+        await spin_msg.edit(content=f"🎡 Main apa hari ini?...")
         await asyncio.sleep(0.3)
 
     final_result = random.choice(wheel_options)
+    
     embed = discord.Embed(
         title="🎡 Hasil akhir!",
         description=f"Selamat hari ini kita main {final_result}",
         color=discord.Color.green()
     )
+    
     await spin_msg.edit(content=None, embed=embed)
+
+    game_image_path = game_images[final_result]
+    await ctx.send(file=discord.File(game_image_path))
 
 @bot.command()
 async def calc(ctx, *, expression: str):
@@ -63,12 +75,12 @@ async def help(ctx):
     )
     embed.add_field(name="!spin", value="Spin wheel untuk game yang akan dimainkan hari ini.", inline=False)
     embed.add_field(name="!calc", value="Kalkulator. Contoh penggunaan: `!calc 2 + 2 * (3 + 4)`", inline=False)
-    embed.add_field(name="!random", value="Mengirim GIF random dari Giphy.", inline=False)
+    embed.add_field(name="!random_gif", value="Mengirim GIF random dari Giphy.", inline=False)
     embed.add_field(name="!help", value="Menampilkan pesan ini.", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
-async def random(ctx):
+@bot.command(name="random") 
+async def random_gif(ctx): # Ubah nama karena conflict sama depedency random
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&tag=&rating=g') as response:
             data = await response.json()
