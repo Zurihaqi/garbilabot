@@ -2,8 +2,9 @@ import discord
 import os
 import random
 import asyncio
-from discord.ext import commands
 import math
+import aiohttp
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,6 +12,8 @@ load_dotenv()
 token = os.getenv('DISCORD_BOT_TOKEN')
 if not token:
     print("Error: DISCORD_BOT_TOKEN belum ada.")
+
+GIPHY_API_KEY = os.getenv('GIPHY_API_KEY')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -60,7 +63,16 @@ async def help(ctx):
     )
     embed.add_field(name="!spin", value="Spin wheel untuk game yang akan dimainkan hari ini.", inline=False)
     embed.add_field(name="!calc", value="Kalkulator. Contoh penggunaan: `!calc 2 + 2 * (3 + 4)`", inline=False)
+    embed.add_field(name="!random", value="Mengirim GIF random dari Giphy.", inline=False)
     embed.add_field(name="!help", value="Menampilkan pesan ini.", inline=False)
     await ctx.send(embed=embed)
+
+@bot.command()
+async def random(ctx):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f'https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&tag=&rating=g') as response:
+            data = await response.json()
+            gif_url = data['data']['images']['original']['url']
+            await ctx.send(gif_url)
 
 bot.run(token)
