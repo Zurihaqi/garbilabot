@@ -20,5 +20,8 @@ LUCK_STATUSES = [
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
 
+LOG_FORMAT = "[%(levelname)-5s] [%(asctime)s] %(name)s: %(message)s"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 ALLOWED_MATH = {name: obj for name, obj in math.__dict__.items()
                 if not name.startswith("__")}

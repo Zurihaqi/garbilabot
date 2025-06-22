@@ -1,7 +1,5 @@
 import subprocess
 import asyncio
-import os
-import sys
 from discord.ext import commands
 from utils.constants import MC_SERVER_PATH
 from dotenv import load_dotenv
@@ -67,33 +65,6 @@ class Server(commands.Cog):
             await ctx.send(f"❌ Gagal menghentikan server: {e}")
         finally:
             server_process = None
-
-    @commands.command()
-    async def reload(self, ctx):
-        """Reload bot."""
-        global server_process
-
-        if not is_owner():
-            await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
-            return
-
-        await ctx.send("♻️ Reloading bot...")
-
-        if server_process and server_process.poll() is None:
-            try:
-                server_process.stdin.write("stop\n")
-                server_process.stdin.flush()
-                await asyncio.get_event_loop().run_in_executor(None, lambda: server_process.wait(timeout=15))
-            except Exception:
-                server_process.kill()
-            finally:
-                server_process = None
-
-        await self.bot.close()
-        os.execv(sys.executable, [sys.executable] + sys.argv)
-
-    @commands.command()
-    async def kys(self, ctx):
         """Menutup bot."""
         if not is_owner():
             await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
