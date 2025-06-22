@@ -1,15 +1,6 @@
 import random, aiohttp, discord, asyncio
 from discord.ext import commands
-from utils.constants import GIPHY_API_KEY
-
-LUCK_STATUSES = [
-    ("🍀", "Main Character Energy - Lock in"),
-    ("⭐", "Plot Armor Activated - RNGesus loves you"),
-    ("🌟", "Mid Tier Luck - Bros on 50:50"),
-    ("😐", "NPC Mode - Nothing special, just existing"),
-    ("😞", "Cursed Build - L + Ratio + Skill Issue"),
-    ("💀", "Delete This Day - Touch grass, it's over")
-]
+from utils.constants import GIPHY_API_KEY, LUCK_STATUSES
 
 class Fun(commands.Cog):
     def __init__(self, bot):

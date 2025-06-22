@@ -8,6 +8,15 @@ GIPHY_API_KEY  = os.getenv("GIPHY_API_KEY")
 OWNER_ID       = os.getenv("OWNER_ID")
 MC_SERVER_PATH = os.getenv("MC_SERVER_PATH")
 
+LUCK_STATUSES = [
+    ("🍀", "Main Character Energy - Lock in"),
+    ("⭐", "Plot Armor Activated - RNGesus loves you"),
+    ("🌟", "Mid Tier Luck - Bros on 50:50"),
+    ("😐", "NPC Mode - Nothing special, just existing"),
+    ("😞", "Cursed Build - L + Ratio + Skill Issue"),
+    ("💀", "Delete This Day - Touch grass, it's over")
+]
+
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
 
