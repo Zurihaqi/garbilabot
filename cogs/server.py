@@ -3,7 +3,7 @@ import asyncio
 import os
 import sys
 from discord.ext import commands
-from utils.constants import OWNER_ID
+from utils.constants import MC_SERVER_PATH
 from dotenv import load_dotenv
 from utils.permissions import is_owner
 
@@ -30,7 +30,7 @@ class Server(commands.Cog):
         try:
             server_process = subprocess.Popen(
                 ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.4.jar", "--nogui"],
-                cwd=r"D:\Games\MC-Paper-1.21.4",
+                cwd=MC_SERVER_PATH,
                 stdin=subprocess.PIPE,
                 text=True,
                 creationflags=subprocess.CREATE_NEW_CONSOLE
