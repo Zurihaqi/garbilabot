@@ -11,7 +11,5 @@ MC_SERVER_PATH = os.getenv("MC_SERVER_PATH")
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
 
-WHEEL_OPTIONS = ['🎉 Terraria', '🎉 Dota', '🎉 HOK', '🎉 Minecraft']
-
 ALLOWED_MATH = {name: obj for name, obj in math.__dict__.items()
                 if not name.startswith("__")}
