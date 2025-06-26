@@ -65,13 +65,6 @@ class Server(commands.Cog):
             await ctx.send(f"❌ Gagal menghentikan server: {e}")
         finally:
             server_process = None
-        """Menutup bot."""
-        if not is_owner():
-            await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
-            return
-
-        await ctx.send("🔌 Bot akan dimatikan... Sampai jumpa!")
-        await self.bot.close()
 
 async def setup(bot):
     await bot.add_cog(Server(bot))
