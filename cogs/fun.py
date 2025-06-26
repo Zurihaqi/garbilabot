@@ -56,7 +56,7 @@ class Fun(commands.Cog):
     @commands.command(name="random")
     async def random_gif(self, ctx: commands.Context):
         """Ambil gif random dari giphy."""
-        url = f"https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&rating=R"
+        url = f"https://api.giphy.com/v1/gifs/random?api_key={GIPHY_API_KEY}&rating=R&tag=brainrot"
         async with aiohttp.ClientSession() as session, session.get(url) as resp:
             data = await resp.json()
             await ctx.send(data["data"]["images"]["original"]["url"])

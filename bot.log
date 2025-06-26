@@ -337,3 +337,5 @@ NoneType: None
 [INFO ] [2025-06-26 23:19:27] bot: 📤 Command 'run' finished for zrymund
 [INFO ] [2025-06-26 23:20:13] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
 [INFO ] [2025-06-26 23:20:13] bot: 📤 Command 'run' finished for zrymund
+[INFO ] [2025-06-26 23:27:58] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 23:27:58] bot: Reload requested by owner (zrymund). Re-exec self.
