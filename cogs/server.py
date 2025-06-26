@@ -136,5 +136,29 @@ class Server(commands.Cog):
         except Exception as e:
             await ctx.send(f"❌ Gagal mengirim perintah: {e}")
 
+    @commands.command()
+    async def shutdown_in(self, ctx, seconds: int, *, reason: str = ""):
+        """Shutdown the server in a given number of seconds."""
+        global server_process
+
+        if not is_owner():
+            await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
+            return
+
+        if not server_process or server_process.poll() is not None:
+            await ctx.send("⚠️ Server tidak sedang berjalan.")
+            return
+
+        if seconds <= 0:
+            await ctx.send("⏳ Waktu harus lebih dari 0 detik.")
+            return
+
+        try:
+            await ctx.send(f"🕒 Server akan dimatikan dalam {seconds} detik. Alasan: {reason}")
+            await asyncio.sleep(seconds)
+            await self.stop(ctx)
+        except Exception as e:
+            await ctx.send(f"❌ Gagal menjadwalkan shutdown: {e}")
+
 async def setup(bot):
     await bot.add_cog(Server(bot))

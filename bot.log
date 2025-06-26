@@ -339,3 +339,95 @@ NoneType: None
 [INFO ] [2025-06-26 23:20:13] bot: 📤 Command 'run' finished for zrymund
 [INFO ] [2025-06-26 23:27:58] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
 [WARNING] [2025-06-26 23:27:58] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 23:27:59] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 23:27:59] discord.client: logging in using static token
+[INFO ] [2025-06-26 23:28:01] discord.gateway: Shard ID None has connected to Gateway (Session ID: a42458a3d956cab90ce76300982a6170).
+[INFO ] [2025-06-26 23:28:03] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 23:28:03] bot: 📥 Command 'random' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:28:04] bot: 📤 Command 'random' finished for zrymund
+[INFO ] [2025-06-26 23:34:17] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 23:34:18] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 23:34:19] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 23:34:19] discord.client: logging in using static token
+[INFO ] [2025-06-26 23:34:20] discord.gateway: Shard ID None has connected to Gateway (Session ID: f0e953a0d70d36c4fc3d58bcd33e1629).
+[INFO ] [2025-06-26 23:34:22] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 23:34:35] bot: 📥 Command 'shutdown_in' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:34:35] bot: 📤 Command 'shutdown_in' finished for zrymund
+[INFO ] [2025-06-26 23:35:00] bot: 📥 Command 'start' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:35:00] bot: 📤 Command 'start' finished for zrymund
+[INFO ] [2025-06-26 23:35:14] bot: 📥 Command 'shutdown_in' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:35:52] bot: 📥 Command 'shutdown_in' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:36:17] bot: 📥 Command 'shutdown_in' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:36:25] bot: 📤 Command 'shutdown_in' finished for zrymund
+[INFO ] [2025-06-26 23:36:36] bot: 📥 Command 'kys' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[ERROR] [2025-06-26 23:36:37] discord.client: Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 449, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1411, in on_message
+    await self.process_commands(message)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1408, in process_commands
+    await self.invoke(ctx)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1372, in invoke
+    self.dispatch('command_completion', ctx)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 228, in dispatch
+    super().dispatch(event_name, *args, **kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 507, in dispatch
+    self._schedule_event(coro, method, *args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 467, in _schedule_event
+    return self.loop.create_task(wrapped, name=f'discord.py: {event_name}')
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: '_MissingSentinel' object has no attribute 'create_task'
+[ERROR] [2025-06-26 23:36:37] discord.client: Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 449, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1411, in on_message
+    await self.process_commands(message)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1408, in process_commands
+    await self.invoke(ctx)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1372, in invoke
+    self.dispatch('command_completion', ctx)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 228, in dispatch
+    super().dispatch(event_name, *args, **kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 507, in dispatch
+    self._schedule_event(coro, method, *args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 467, in _schedule_event
+    return self.loop.create_task(wrapped, name=f'discord.py: {event_name}')
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: '_MissingSentinel' object has no attribute 'create_task'
+[ERROR] [2025-06-26 23:36:37] discord.client: Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 449, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1411, in on_message
+    await self.process_commands(message)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1408, in process_commands
+    await self.invoke(ctx)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1372, in invoke
+    self.dispatch('command_completion', ctx)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 228, in dispatch
+    super().dispatch(event_name, *args, **kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 507, in dispatch
+    self._schedule_event(coro, method, *args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 467, in _schedule_event
+    return self.loop.create_task(wrapped, name=f'discord.py: {event_name}')
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: '_MissingSentinel' object has no attribute 'create_task'
+[INFO ] [2025-06-26 23:36:37] bot: 🛑 Shutting down...
