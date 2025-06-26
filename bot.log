@@ -209,3 +209,131 @@ AttributeError: '_MissingSentinel' object has no attribute 'create_task'
 [INFO ] [2025-06-22 23:47:30] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
 [INFO ] [2025-06-22 23:47:40] bot: 📥 Command 'undercover' invoked by zrymund (408604377134399488) in Server Serbaguna/mc-console
 [INFO ] [2025-06-22 23:47:40] bot: 📤 Command 'undercover' finished for zrymund
+[INFO ] [2025-06-22 23:54:13] bot: 📥 Command 'kys' invoked by zrymund (408604377134399488) in Server Serbaguna/mc-console
+[ERROR] [2025-06-22 23:54:14] discord.client: Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 449, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1411, in on_message
+    await self.process_commands(message)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1408, in process_commands
+    await self.invoke(ctx)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1372, in invoke
+    self.dispatch('command_completion', ctx)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 228, in dispatch
+    super().dispatch(event_name, *args, **kwargs)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 507, in dispatch
+    self._schedule_event(coro, method, *args, **kwargs)
+  File "C:\Users\zulfa\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\client.py", line 467, in _schedule_event
+    return self.loop.create_task(wrapped, name=f'discord.py: {event_name}')
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: '_MissingSentinel' object has no attribute 'create_task'
+[INFO ] [2025-06-22 23:54:14] bot: 🛑 Shutting down...
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 19:20:34] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 19:20:34] discord.client: logging in using static token
+[INFO ] [2025-06-26 19:20:36] discord.gateway: Shard ID None has connected to Gateway (Session ID: 9b0a4a4f8e0b97d3c6aacfcb3efdf317).
+[INFO ] [2025-06-26 19:20:39] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 19:21:33] bot: 📥 Command 'start' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 19:21:34] bot: 📤 Command 'start' finished for zrymund
+[ERROR] [2025-06-26 20:32:32] bot: ❌ Error in command 'None': Command "st0p" is not found
+NoneType: None
+[INFO ] [2025-06-26 20:33:25] bot: 📥 Command 'luck' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 20:33:41] bot: 📤 Command 'luck' finished for zrymund
+[INFO ] [2025-06-26 22:56:12] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 22:56:12] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 22:56:14] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 22:56:14] discord.client: logging in using static token
+[INFO ] [2025-06-26 22:56:16] discord.gateway: Shard ID None has connected to Gateway (Session ID: 67bfde2f087f4e82b0ed69186854e1a7).
+[INFO ] [2025-06-26 22:56:18] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 22:56:18] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 22:56:18] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 22:58:38] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 22:58:39] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 22:58:40] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 22:58:40] discord.client: logging in using static token
+[INFO ] [2025-06-26 22:58:41] discord.gateway: Shard ID None has connected to Gateway (Session ID: 319ae35d699fe47c8f2d30ec1e158194).
+[INFO ] [2025-06-26 22:58:43] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 22:58:47] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 22:58:48] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 22:59:14] bot: 📥 Command 'stop' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 22:59:45] bot: 📤 Command 'stop' finished for zrymund
+[INFO ] [2025-06-26 23:00:17] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:00:18] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 23:01:36] bot: 📥 Command 'stop' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:02:07] bot: 📤 Command 'stop' finished for zrymund
+[INFO ] [2025-06-26 23:03:59] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 23:04:00] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 23:04:01] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 23:04:01] discord.client: logging in using static token
+[INFO ] [2025-06-26 23:04:02] discord.gateway: Shard ID None has connected to Gateway (Session ID: f12680173a46425b657ad98da9327704).
+[INFO ] [2025-06-26 23:04:04] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:04:04] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 23:04:04] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 23:04:08] bot: 📥 Command 'start' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:04:08] bot: 📤 Command 'start' finished for zrymund
+[INFO ] [2025-06-26 23:07:54] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:08:08] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 23:09:00] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 23:09:00] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 23:09:01] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 23:09:01] discord.client: logging in using static token
+[INFO ] [2025-06-26 23:09:03] discord.gateway: Shard ID None has connected to Gateway (Session ID: 60292340f54175cb4b9c030c9665857f).
+[INFO ] [2025-06-26 23:09:03] bot: 📥 Command 'stop' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:09:03] bot: 📤 Command 'stop' finished for zrymund
+[INFO ] [2025-06-26 23:09:05] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 23:09:06] bot: 📥 Command 'start' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:09:07] bot: 📤 Command 'start' finished for zrymund
+[INFO ] [2025-06-26 23:10:06] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:10:10] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 23:14:30] bot: 📥 Command 'restart' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:14:34] bot: 📤 Command 'restart' finished for zrymund
+[INFO ] [2025-06-26 23:16:19] bot: 📥 Command 'reload' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[WARNING] [2025-06-26 23:16:19] bot: Reload requested by owner (zrymund). Re-exec self.
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.fun
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.math
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.server
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.undercover
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.help
+[INFO ] [2025-06-26 23:16:20] bot: 🔧 Loaded cogs.control
+[INFO ] [2025-06-26 23:16:20] discord.client: logging in using static token
+[INFO ] [2025-06-26 23:16:22] discord.gateway: Shard ID None has connected to Gateway (Session ID: 35e60513f9b9b71a52f92776328a50f6).
+[INFO ] [2025-06-26 23:16:24] bot: ✅ Logged in as Garbilabot#5888 (1290206813630889984)
+[INFO ] [2025-06-26 23:16:28] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:16:28] bot: 📤 Command 'run' finished for zrymund
+[INFO ] [2025-06-26 23:17:01] bot: 📥 Command 'start' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:17:02] bot: 📤 Command 'start' finished for zrymund
+[INFO ] [2025-06-26 23:18:00] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:18:01] bot: 📤 Command 'run' finished for zrymund
+[INFO ] [2025-06-26 23:18:18] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:18:18] bot: 📤 Command 'run' finished for zrymund
+[INFO ] [2025-06-26 23:19:27] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:19:27] bot: 📤 Command 'run' finished for zrymund
+[INFO ] [2025-06-26 23:20:13] bot: 📥 Command 'run' invoked by zrymund (408604377134399488) in Garbilatong ofc/minecraft
+[INFO ] [2025-06-26 23:20:13] bot: 📤 Command 'run' finished for zrymund
