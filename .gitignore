@@ -1,3 +1,4 @@
 .env
 bot.log
-.pyc
+**/__pycache__/
+*.pyc
