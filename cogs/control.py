@@ -43,8 +43,14 @@ class Control(commands.Cog):
             await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
             return
 
-        await ctx.send("🔌 Bot akan dimatkan... Sampai jumpa!")
-        await self.bot.close()
+        await ctx.send("🔌 Bot akan dimatikan... Sampai jumpa!")
+
+        async def shutdown():
+            await asyncio.sleep(1)
+            await self.bot.close()
+
+        asyncio.create_task(shutdown())
+
 
 async def setup(bot):
     await bot.add_cog(Control(bot))
