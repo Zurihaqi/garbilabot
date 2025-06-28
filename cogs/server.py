@@ -26,7 +26,7 @@ class Server(commands.Cog):
 
         try:
             server_process = subprocess.Popen(
-                ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.4.jar", "--nogui"],
+                ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.6.jar", "--nogui"],
                 cwd=MC_SERVER_PATH,
                 stdin=subprocess.PIPE,
                 text=True,
@@ -60,7 +60,7 @@ class Server(commands.Cog):
                 await ctx.send("✅ Server sudah berhenti. Memulai ulang...")
 
             server_process = subprocess.Popen(
-                ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.4.jar", "--nogui"],
+                ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.6.jar", "--nogui"],
                 cwd=MC_SERVER_PATH,
                 stdin=subprocess.PIPE,
                 text=True,
@@ -74,7 +74,7 @@ class Server(commands.Cog):
             await ctx.send("⚠️ Server tidak respons saat dimatikan, dipaksa mati (kill). Memulai ulang...")
             try:
                 server_process = subprocess.Popen(
-                    ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.4.jar", "--nogui"],
+                    ["java", "-Xmx2G", "-Xms2G", "-jar", "paper-1.21.6.jar", "--nogui"],
                     cwd=MC_SERVER_PATH,
                     stdin=subprocess.PIPE,
                     text=True,
