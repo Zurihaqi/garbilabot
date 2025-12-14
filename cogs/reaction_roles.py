@@ -154,7 +154,7 @@ class ReactionRoles(commands.Cog):
             # Defer immediately to prevent timeout
             print(f"[DEBUG] Starting /roles command for guild {interaction.guild_id}")
             await interaction.response.defer()
-            print(f"[DEBUG] Deferred successfully")
+            print("[DEBUG] Deferred successfully")
             
             guild = interaction.guild
             channel = interaction.channel
@@ -166,7 +166,7 @@ class ReactionRoles(commands.Cog):
                 )
                 return
 
-            print(f"[DEBUG] Fetching roles from database...")
+            print("[DEBUG] Fetching roles from database...")
             cursor = await self.db.execute(
                 """
                 SELECT DISTINCT emoji, role_id
@@ -240,7 +240,7 @@ class ReactionRoles(commands.Cog):
                 (guild.id, channel.id, message.id),
             )
             await self.db.commit()
-            print(f"[DEBUG] Database updated successfully")
+            print("[DEBUG] Database updated successfully")
             
         except Exception as e:
             print(f"[ERROR] Exception in /roles command: {e}")
@@ -351,7 +351,7 @@ class ReactionRoles(commands.Cog):
         
         # Ignore bot's own reactions
         if not self.db or payload.user_id == self.bot.user.id:
-            print(f"[DEBUG REACTION] Ignoring - bot's own reaction or no db")
+            print("[DEBUG REACTION] Ignoring - bot's own reaction or no db")
             return
         
         # Check if this message is tracked as a reaction role message
@@ -369,12 +369,12 @@ class ReactionRoles(commands.Cog):
         
         guild = self.bot.get_guild(payload.guild_id)
         if not guild:
-            print(f"[DEBUG REACTION] Guild not found")
+            print("[DEBUG REACTION] Guild not found")
             return
         
         member = guild.get_member(payload.user_id)
         if not member:
-            print(f"[DEBUG REACTION] Member not found")
+            print("[DEBUG REACTION] Member not found")
             return
         
         # Normalize the emoji from the reaction

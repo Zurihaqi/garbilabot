@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from aiohttp import web
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -13,6 +12,7 @@ logging.basicConfig(
     datefmt=DATE_FORMAT,
     handlers=[logging.StreamHandler()],
 )
+
 logger = logging.getLogger("bot")
 
 COGS = [
@@ -25,7 +25,7 @@ COGS = [
 ]
 
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned,
+    command_prefix=commands.when_mentioned,  # prefix unused but required
     intents=INTENTS,
 )
 
@@ -34,6 +34,7 @@ async def on_ready():
     await bot.tree.sync()
     logger.info("✅ Logged in as %s (%s)", bot.user, bot.user.id)
     logger.info("🔁 Slash commands synced")
+
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
@@ -45,8 +46,12 @@ async def on_interaction(interaction: discord.Interaction):
             interaction.user.id,
         )
 
+
 @bot.event
-async def on_app_command_completion(interaction: discord.Interaction, command: app_commands.Command):
+async def on_app_command_completion(
+    interaction: discord.Interaction,
+    command: app_commands.Command,
+):
     logger.info(
         "📥 Slash command '/%s' executed by %s (%s) in %s",
         command.qualified_name,
@@ -56,7 +61,10 @@ async def on_app_command_completion(interaction: discord.Interaction, command: a
     )
 
 @bot.tree.error
-async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+async def on_app_command_error(
+    interaction: discord.Interaction,
+    error: app_commands.AppCommandError,
+):
     logger.error(
         "❌ Slash command error: /%s by %s (%s)",
         interaction.command.name if interaction.command else "unknown",
@@ -66,29 +74,13 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
     )
 
     message = "❌ An error occurred while executing this command."
+
     if interaction.response.is_done():
         await interaction.followup.send(message, ephemeral=True)
     else:
         await interaction.response.send_message(message, ephemeral=True)
 
-def healthcheck(request):
-    return web.Response(text="OK")
-
-async def start_healthcheck_server():
-    app = web.Application()
-    app.add_routes([web.get("/kaithhealthcheck", healthcheck)])
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", 8080)
-    await site.start()
-    logger.info("🌐 Health check running on http://0.0.0.0:8080/kaithheathcheck")
-
 async def main():
-    task = asyncio.create_task(start_healthcheck_server())
-
-    await task
-
-    # Load cogs
     async with bot:
         for cog in COGS:
             try:
@@ -97,12 +89,19 @@ async def main():
             except Exception:
                 logger.exception("❌ Failed to load %s", cog)
 
-    while True:
-        try:
-            await bot.start(TOKEN)
-        except KeyboardInterrupt:
-            logger.warning("Shutdown requested by user (Ctrl+C).")
-            break
-        except Exception:
-            logger.exception("❌ Bot crashed, restarting in 5 seconds...")
-            await asyncio.sleep(5)
+        if not TOKEN:
+            logger.critical("DISCORD_BOT_TOKEN is missing.")
+            raise SystemExit("DISCORD_BOT_TOKEN is missing.")
+
+        await bot.start(TOKEN)
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.warning("Shutdown requested by user (Ctrl+C).")
+    except Exception:
+        logger.exception("❌ Fatal error")
+    finally:
+        logger.info("🛑 Shutting down...")
