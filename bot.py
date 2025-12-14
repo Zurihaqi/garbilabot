@@ -10,10 +10,7 @@ logging.basicConfig(
     level=logging.INFO,
     format=LOG_FORMAT,
     datefmt=DATE_FORMAT,
-    handlers=[
-        logging.FileHandler("bot.log", encoding="utf-8"),
-        logging.StreamHandler(),
-    ],
+    handlers=[logging.StreamHandler()],
 )
 
 logger = logging.getLogger("bot")
