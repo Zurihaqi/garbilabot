@@ -18,6 +18,9 @@ LUCK_STATUSES = [
 ]
 
 INTENTS = discord.Intents.default()
+INTENTS.guilds = True
+INTENTS.guild_reactions = True
+INTENTS.members = True
 INTENTS.message_content = True
 
 LOG_FORMAT = "[%(levelname)-5s] [%(asctime)s] %(name)s: %(message)s"

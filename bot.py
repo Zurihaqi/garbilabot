@@ -24,15 +24,44 @@ COGS = [
     "cogs.undercover",
     "cogs.help",
     "cogs.control",
+    "cogs.reaction_roles",
 ]
 
-bot = commands.Bot(command_prefix="/", intents=INTENTS)
+bot = commands.Bot(
+    command_prefix=commands.when_mentioned,  # prefix unused but required
+    intents=INTENTS,
+)
 
 @bot.event
 async def on_ready():
     await bot.tree.sync()
     logger.info("✅ Logged in as %s (%s)", bot.user, bot.user.id)
     logger.info("🔁 Slash commands synced")
+
+
+@bot.event
+async def on_interaction(interaction: discord.Interaction):
+    if interaction.type is discord.InteractionType.application_command:
+        logger.info(
+            "➡️ Slash command attempt '/%s' by %s (%s)",
+            interaction.data.get("name", "unknown"),
+            interaction.user,
+            interaction.user.id,
+        )
+
+
+@bot.event
+async def on_app_command_completion(
+    interaction: discord.Interaction,
+    command: app_commands.Command,
+):
+    logger.info(
+        "📥 Slash command '/%s' executed by %s (%s) in %s",
+        command.qualified_name,
+        interaction.user,
+        interaction.user.id,
+        interaction.guild.name if interaction.guild else "DM",
+    )
 
 @bot.tree.error
 async def on_app_command_error(
@@ -54,29 +83,6 @@ async def on_app_command_error(
     else:
         await interaction.response.send_message(message, ephemeral=True)
 
-@bot.event
-async def on_app_command_completion(
-    interaction: discord.Interaction,
-    command: app_commands.Command,
-):
-    logger.info(
-        "📥 Slash command '/%s' executed by %s (%s) in %s",
-        command.qualified_name,
-        interaction.user,
-        interaction.user.id,
-        interaction.guild.name if interaction.guild else "DM",
-    )
-
-@bot.event
-async def on_interaction(interaction: discord.Interaction):
-    if interaction.type is discord.InteractionType.application_command:
-        logger.info(
-            "➡️ Slash command attempt '/%s' by %s (%s)",
-            interaction.data.get("name", "unknown"),
-            interaction.user,
-            interaction.user.id,
-        )
-
 async def main():
     async with bot:
         for cog in COGS:
@@ -92,6 +98,7 @@ async def main():
 
         await bot.start(TOKEN)
 
+
 if __name__ == "__main__":
     try:
         asyncio.run(main())
@@ -99,6 +106,5 @@ if __name__ == "__main__":
         logger.warning("Shutdown requested by user (Ctrl+C).")
     except Exception:
         logger.exception("❌ Fatal error")
-        input("Press Enter to exit...")
-
-    logger.info("🛑 Shutting down...")
+    finally:
+        logger.info("🛑 Shutting down...")
