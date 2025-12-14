@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+RPG_COGS = ["ProfileCommands", "EconomyCommands", "ShopCommands", "CombatCommands", "BackgroundTasks"]
+
 class Help(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -25,14 +27,14 @@ class HelpMenuView(discord.ui.View):
         super().__init__(timeout=180)
         self.bot = bot
 
-        options = [
-            discord.SelectOption(
-                label=cog_name.capitalize(),
-                value=cog_name,
-                description=f"View commands for {cog_name.capitalize()}"
-            )
-            for cog_name in bot.cogs.keys()
-        ]
+        # Group RPG cogs under "RPG", exclude EventListener
+        options = []
+        for cog_name in bot.cogs.keys():
+            if cog_name in RPG_COGS:
+                if not any(opt.label == "RPG" for opt in options):
+                    options.append(discord.SelectOption(label="RPG", value="RPG", description="View all RPG commands"))
+            elif cog_name != "EventListener":
+                options.append(discord.SelectOption(label=cog_name.capitalize(), value=cog_name, description=f"View commands for {cog_name.capitalize()}"))
 
         self.add_item(HelpSelect(bot, options))
 
@@ -42,9 +44,7 @@ class HelpMenuView(discord.ui.View):
             description="Select a category from the dropdown below to view commands.",
             color=discord.Color.blurple()
         )
-        embed.set_footer(
-            text="Use the dropdown to browse commands."
-        )
+        embed.set_footer(text="Use the dropdown to browse commands.")
         return embed
 
 class HelpSelect(discord.ui.Select):
@@ -54,31 +54,26 @@ class HelpSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         cog_name = self.values[0]
-        cog = self.bot.get_cog(cog_name)
 
-        if not cog:
-            await interaction.response.send_message(
-                "Cog not found.",
-                ephemeral=True
-            )
-            return
+        embed = discord.Embed(title=f"📂 {cog_name} Commands", color=discord.Color.teal())
 
-        embed = discord.Embed(
-            title=f"📂 {cog_name.capitalize()} Commands",
-            color=discord.Color.teal()
-        )
+        if cog_name == "RPG":
+            # Aggregate all RPG cog commands, exclude EventListener
+            for name in RPG_COGS:
+                cog = self.bot.get_cog(name)
+                if not cog:
+                    continue
+                for cmd in cog.get_app_commands():
+                    embed.add_field(name=f"• `/{cmd.name}`", value=cmd.description or "No description", inline=False)
+        else:
+            cog = self.bot.get_cog(cog_name)
+            if not cog or cog_name == "EventListener":
+                await interaction.response.send_message("Cog not found.", ephemeral=True)
+                return
+            for cmd in cog.get_app_commands():
+                embed.add_field(name=f"• `/{cmd.name}`", value=cmd.description or "No description", inline=False)
 
-        for command in cog.get_app_commands():
-            embed.add_field(
-                name=f"• `/{command.name}`",
-                value=command.description or "No description available.",
-                inline=False
-            )
-
-        embed.set_footer(
-            text="Use /<command> to run a command."
-        )
-
+        embed.set_footer(text="Use /<command> to run a command.")
         await interaction.response.edit_message(embed=embed, view=self.view)
 
 async def setup(bot: commands.Bot):

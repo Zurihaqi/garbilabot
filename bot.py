@@ -22,6 +22,7 @@ COGS = [
     "cogs.help",
     "cogs.control",
     "cogs.reaction_roles",
+    "cogs.rpg",
 ]
 
 bot = commands.Bot(

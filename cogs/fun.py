@@ -216,7 +216,6 @@ class Fun(commands.Cog):
                 f"Duration: {duration}\n"
                 f"Winners: {winners}\n"
                 f"Prizes: {', '.join([p[0] for p in prize_list])}\n\n"
-                f"⏳ Time left: {duration}"
             ),
             color=Color.green()
         )
