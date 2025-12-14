@@ -2,55 +2,44 @@ import asyncio
 import logging
 import os
 import sys
+import discord
+from discord import app_commands
 from discord.ext import commands
-
-from utils.permissions import is_owner
 
 log = logging.getLogger("bot")
 
+from utils.permissions import is_owner_slash
+
 class Control(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.server_process = None
 
-    @commands.command(name="reload", help="Reload bot.")
-    async def reload(self, ctx):
-        if not is_owner():
-            await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
-            return
-
-        await ctx.send("♻️ Reloading bot...")
-
-        if self.server_process and self.server_process.poll() is None:
-            try:
-                self.server_process.stdin.write("stop\n")
-                self.server_process.stdin.flush()
-                await asyncio.get_event_loop().run_in_executor(
-                    None, lambda: self.server_process.wait(timeout=15)
-                )
-            except Exception:
-                self.server_process.kill()
-            finally:
-                self.server_process = None
-
-        log.warning("Reload requested by owner (%s). Re-exec self.", ctx.author)
+    @app_commands.command(name="reload", description="Reload bot")
+    @is_owner_slash()
+    async def reload(self, interaction: discord.Interaction):
+        await interaction.response.send_message("♻️ Reloading bot...")
         await self.bot.close()
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
-    @commands.command(name="kys", help="Matikan bot.")
-    async def kys(self, ctx):
-        if not is_owner():
-            await ctx.send("⛔ Kamu tidak punya izin untuk menjalankan perintah ini.")
+    @app_commands.command(name="shutdown", description="Shutdown bot")
+    @is_owner_slash()
+    async def shutdown(self, interaction: discord.Interaction):
+        await interaction.response.send_message("🔌 Bot shutting down...")
+        await asyncio.sleep(1)
+        await self.bot.close()
+        if not self.is_owner_interaction(interaction):
+            await interaction.response.send_message(
+                "⛔ You don't have permission to use this command.",
+                ephemeral=True
+            )
             return
 
-        await ctx.send("🔌 Bot akan dimatikan... Sampai jumpa!")
+        await interaction.response.send_message(
+            "🔌 Bot will shutdown soon..."
+        )
 
-        async def shutdown():
-            await asyncio.sleep(1)
-            await self.bot.close()
+        await asyncio.sleep(1)
+        await self.bot.close()
 
-        asyncio.create_task(shutdown())
-
-
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Control(bot))

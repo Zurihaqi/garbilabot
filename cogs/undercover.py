@@ -1,6 +1,7 @@
 from __future__ import annotations
 import random
 import discord
+from discord import app_commands
 from discord.ext import commands
 from data.word_pairs import WORD_PAIRS
 
@@ -22,16 +23,15 @@ class JoinView(discord.ui.View):
     async def start(self, interaction: discord.Interaction, _button: discord.ui.Button):
         await self.cog.try_start_game(interaction)
 
-
 class VoteView(discord.ui.View):
-    """One button per remaining player. Disappears after vote."""
+    """One button per remaining player. Disables after voting."""
     def __init__(self, cog: "Undercover", voter: discord.Member):
         super().__init__(timeout=120)
         self.cog = cog
         self.voter = voter
 
-        for p in cog.game["players"]:
-            self.add_item(VoteButton(p))
+        for player in cog.game["players"]:
+            self.add_item(VoteButton(player))
 
     async def on_timeout(self) -> None:
         for item in self.children:
@@ -41,8 +41,10 @@ class VoteView(discord.ui.View):
 
 class VoteButton(discord.ui.Button):
     def __init__(self, target: discord.Member):
-        super().__init__(label=target.display_name,
-                         style=discord.ButtonStyle.secondary)
+        super().__init__(
+            label=target.display_name,
+            style=discord.ButtonStyle.secondary
+        )
         self.target = target
 
     async def callback(self, interaction: discord.Interaction):
@@ -52,12 +54,16 @@ class VoteButton(discord.ui.Button):
 
         if voter in cog.game["votes"]:
             await interaction.response.send_message(
-                "Kamu sudah vote di ronde ini!", ephemeral=True)
+                "You have already voted this round!",
+                ephemeral=True
+            )
             return
 
         cog.game["votes"][voter] = self.target
         await interaction.response.send_message(
-            f"Vote kamu untuk **{self.target.display_name}** tercatat ✅", ephemeral=True)
+            f"Your vote for **{self.target.display_name}** has been recorded ✅",
+            ephemeral=True
+        )
 
         for item in view.children:
             if isinstance(item, discord.ui.Button):
@@ -77,112 +83,168 @@ class Undercover(commands.Cog):
             "votes": {},
         }
 
-    @commands.command(name="undercover")
-    async def undercover_entry(self, ctx: commands.Context):
-        """Menampilkan lobby permainan undercover."""
+    @app_commands.command(
+        name="undercover",
+        description="Start an Undercover game lobby"
+    )
+    async def undercover_entry(self, interaction: discord.Interaction):
+        """Show the Undercover game lobby."""
         embed = self.lobby_embed()
-        view  = JoinView(self)
-        await ctx.send(embed=embed, view=view)
+        view = JoinView(self)
+
+        await interaction.response.send_message(
+            embed=embed,
+            view=view
+        )
 
     async def add_player(self, interaction: discord.Interaction):
         if self.game["started"]:
             await interaction.response.send_message(
-                "Game sudah dimulai.", ephemeral=True); return
+                "The game has already started.",
+                ephemeral=True
+            )
+            return
+
         self.game["players"].add(interaction.user)
-        await interaction.response.edit_message(embed=self.lobby_embed())
+        await interaction.response.edit_message(
+            embed=self.lobby_embed()
+        )
 
     async def remove_player(self, interaction: discord.Interaction):
         if self.game["started"]:
             await interaction.response.send_message(
-                "Game sudah dimulai.", ephemeral=True); return
+                "The game has already started.",
+                ephemeral=True
+            )
+            return
+
         self.game["players"].discard(interaction.user)
-        await interaction.response.edit_message(embed=self.lobby_embed())
+        await interaction.response.edit_message(
+            embed=self.lobby_embed()
+        )
 
     async def try_start_game(self, interaction: discord.Interaction):
         if self.game["started"]:
             await interaction.response.send_message(
-                "Game sudah berjalan.", ephemeral=True); return
+                "The game is already running.",
+                ephemeral=True
+            )
+            return
+
         if len(self.game["players"]) < 3:
             await interaction.response.send_message(
-                "Butuh minimal 3 pemain.", ephemeral=True); return
+                "At least 3 players are required to start.",
+                ephemeral=True
+            )
+            return
 
         self.game["started"] = True
         self.game["votes"].clear()
+
         players = list(self.game["players"])
         self.game["undercover"] = random.choice(players)
-        normal, under = random.choice(WORD_PAIRS)
+        normal_word, undercover_word = random.choice(WORD_PAIRS)
 
-        for p in players:
+        for player in players:
             try:
-                if p == self.game["undercover"]:
-                    await p.send(f"🕵️ Kamu **UNDERCOVER**! Kata: **{under}**")
+                if player == self.game["undercover"]:
+                    await player.send(
+                        f"🕵️ You are **UNDERCOVER**!\nYour word: **{undercover_word}**"
+                    )
                 else:
-                    await p.send(f"✅ Kamu warga biasa. Kata: **{normal}**")
+                    await player.send(
+                        f"✅ You are a normal player.\nYour word: **{normal_word}**"
+                    )
             except discord.Forbidden:
                 await interaction.channel.send(
-                    f"⚠️ Tidak bisa kirim DM ke {p.display_name}.")
+                    f"⚠️ Cannot send DM to {player.display_name}."
+                )
 
         await interaction.response.edit_message(
-            embed=self.round_embed(), view=None)
+            embed=self.round_embed(),
+            view=None
+        )
+
         await self.send_vote_panels(interaction.channel)
 
     async def send_vote_panels(self, channel: discord.abc.Messageable):
-        """Send one ephemeral voting panel per player."""
-        for p in self.game["players"]:
+        """Send one private voting panel per player."""
+        for player in self.game["players"]:
             try:
-                view = VoteView(self, voter=p)
-                msg = await p.send("Siapa undercover? Pilih satu:", view=view)
-                view.message = msg   # save for later editing
+                view = VoteView(self, voter=player)
+                msg = await player.send(
+                    "Who do you think is the undercover? Choose one:",
+                    view=view
+                )
+                view.message = msg
             except discord.Forbidden:
                 await channel.send(
-                    f"⚠️ {p.display_name} menutup DM, tidak bisa voting.")
+                    f"⚠️ {player.display_name} has DMs disabled and cannot vote."
+                )
 
     async def tally_votes(self, public_channel: discord.abc.Messageable):
         counts: dict[discord.Member, int] = {}
-        for v in self.game["votes"].values():
-            counts[v] = counts.get(v, 0) + 1
+        for vote in self.game["votes"].values():
+            counts[vote] = counts.get(vote, 0) + 1
 
         highest = max(counts.values())
-        out_players = [p for p, n in counts.items() if n == highest]
-        eliminated = random.choice(out_players)
+        tied_players = [p for p, n in counts.items() if n == highest]
+        eliminated = random.choice(tied_players)
 
-        outcome = [f"🔎 {eliminated.display_name} tersingkir!"]
+        messages = [f"🔎 **{eliminated.display_name}** has been eliminated!"]
+
         if eliminated == self.game["undercover"]:
-            outcome.append("🎉 Undercover ketahuan! Warga menang!")
-            await public_channel.send("\n".join(outcome))
+            messages.append("🎉 The undercover has been caught! Civilians win!")
+            await public_channel.send("\n".join(messages))
             return self.reset()
-        else:
-            outcome.append("❌ Bukan undercover. Game lanjut.")
-            self.game["players"].remove(eliminated)
 
-            if len(self.game["players"]) < 3:
-                outcome.append("🤫 Pemain < 3. Undercover menang!")
-                await public_channel.send("\n".join(outcome))
-                return self.reset()
+        messages.append("❌ They were not the undercover. The game continues.")
+        self.game["players"].remove(eliminated)
 
-            self.game["votes"].clear()
-            await public_channel.send("\n".join(outcome))
-            await public_channel.send(embed=self.round_embed())
-            await self.send_vote_panels(public_channel)
+        if len(self.game["players"]) < 3:
+            messages.append("🤫 Fewer than 3 players left. Undercover wins!")
+            await public_channel.send("\n".join(messages))
+            return self.reset()
+
+        self.game["votes"].clear()
+        await public_channel.send("\n".join(messages))
+        await public_channel.send(embed=self.round_embed())
+        await self.send_vote_panels(public_channel)
 
     def lobby_embed(self) -> discord.Embed:
-        names = ", ".join(p.display_name for p in self.game["players"]) or "—"
-        return (discord.Embed(title="Undercover Lobby", colour=0x5865F2)
-                .add_field(name="Pemain", value=names, inline=False)
-                .set_footer(text="Klik Join / Leave. Host klik Start Game ketika siap."))
+        player_names = ", ".join(p.display_name for p in self.game["players"]) or "—"
+        return (
+            discord.Embed(
+                title="Undercover Lobby",
+                color=0x5865F2
+            )
+            .add_field(name="Players", value=player_names, inline=False)
+            .set_footer(
+                text="Click Join / Leave. The host clicks Start Game when ready."
+            )
+        )
 
     def round_embed(self) -> discord.Embed:
-        return (discord.Embed(title="🗳️ Voting Dimulai!",
-                              description="Periksa DM kamu → Pilih 1 pemain yang dicurigai.",
-                              colour=discord.Color.orange())
-                .add_field(name="Pemain Aktif",
-                           value=", ".join(p.display_name
-                                           for p in self.game["players"]),
-                           inline=False))
+        return (
+            discord.Embed(
+                title="🗳️ Voting Started!",
+                description="Check your DMs and vote for one suspicious player.",
+                color=discord.Color.orange()
+            )
+            .add_field(
+                name="Active Players",
+                value=", ".join(p.display_name for p in self.game["players"]),
+                inline=False
+            )
+        )
 
     def reset(self):
-        self.game.update(players=set(), started=False,
-                         undercover=None, votes={})
+        self.game.update(
+            players=set(),
+            started=False,
+            undercover=None,
+            votes={}
+        )
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Undercover(bot))

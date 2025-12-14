@@ -1,6 +1,8 @@
 import asyncio
 import logging
+import discord
 from discord.ext import commands
+from discord import app_commands
 
 from utils.constants import INTENTS, TOKEN, LOG_FORMAT, DATE_FORMAT
 
@@ -10,7 +12,7 @@ logging.basicConfig(
     datefmt=DATE_FORMAT,
     handlers=[
         logging.FileHandler("bot.log", encoding="utf-8"),
-        logging.StreamHandler()
+        logging.StreamHandler(),
     ],
 )
 
@@ -19,52 +21,74 @@ logger = logging.getLogger("bot")
 COGS = [
     "cogs.fun",
     "cogs.math",
-    "cogs.server",
     "cogs.undercover",
     "cogs.help",
-    "cogs.control"
+    "cogs.control",
 ]
 
-bot = commands.Bot(command_prefix="!", intents=INTENTS)
-bot.remove_command("help")
+bot = commands.Bot(command_prefix="/", intents=INTENTS)
 
 @bot.event
 async def on_ready():
+    await bot.tree.sync()
     logger.info("✅ Logged in as %s (%s)", bot.user, bot.user.id)
+    logger.info("🔁 Slash commands synced")
+
+@bot.tree.error
+async def on_app_command_error(
+    interaction: discord.Interaction,
+    error: app_commands.AppCommandError,
+):
+    logger.error(
+        "❌ Slash command error: /%s by %s (%s)",
+        interaction.command.name if interaction.command else "unknown",
+        interaction.user,
+        interaction.user.id,
+        exc_info=True,
+    )
+
+    message = "❌ An error occurred while executing this command."
+
+    if interaction.response.is_done():
+        await interaction.followup.send(message, ephemeral=True)
+    else:
+        await interaction.response.send_message(message, ephemeral=True)
 
 @bot.event
-async def on_command(ctx: commands.Context):
+async def on_app_command_completion(
+    interaction: discord.Interaction,
+    command: app_commands.Command,
+):
     logger.info(
-        "📥 Command '%s' invoked by %s (%s) in %s/%s",
-        ctx.command,
-        ctx.author,
-        ctx.author.id,
-        ctx.guild or "DM",
-        ctx.channel,
+        "📥 Slash command '/%s' executed by %s (%s) in %s",
+        command.qualified_name,
+        interaction.user,
+        interaction.user.id,
+        interaction.guild.name if interaction.guild else "DM",
     )
 
 @bot.event
-async def on_command_completion(ctx: commands.Context):
-    logger.info("📤 Command '%s' finished for %s", ctx.command, ctx.author)
-
-@bot.event
-async def on_command_error(ctx: commands.Context, error: commands.CommandError):
-    if hasattr(ctx.command, "on_error"):
-        return
-    logger.error("❌ Error in command '%s': %s", ctx.command, error, exc_info=True)
+async def on_interaction(interaction: discord.Interaction):
+    if interaction.type is discord.InteractionType.application_command:
+        logger.info(
+            "➡️ Slash command attempt '/%s' by %s (%s)",
+            interaction.data.get("name", "unknown"),
+            interaction.user,
+            interaction.user.id,
+        )
 
 async def main():
     async with bot:
         for cog in COGS:
             try:
                 await bot.load_extension(cog)
-                logger.info(f"🔧 Loaded {cog}")
-            except Exception as exc:
-                logger.exception(f"❌ Failed to load {cog}: {exc}")
+                logger.info("🔧 Loaded %s", cog)
+            except Exception:
+                logger.exception("❌ Failed to load %s", cog)
 
         if not TOKEN:
-            logger.critical("Environment variable DISCORD_BOT_TOKEN missing.")
-            raise SystemExit("Environment variable DISCORD_BOT_TOKEN missing.")
+            logger.critical("DISCORD_BOT_TOKEN is missing.")
+            raise SystemExit("DISCORD_BOT_TOKEN is missing.")
 
         await bot.start(TOKEN)
 
@@ -72,11 +96,9 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.warning("Shutdown requested by user (Ctrl-C).")
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        logger.critical(f"❌ Fatal error: {e}")
+        logger.warning("Shutdown requested by user (Ctrl+C).")
+    except Exception:
+        logger.exception("❌ Fatal error")
         input("Press Enter to exit...")
 
     logger.info("🛑 Shutting down...")
