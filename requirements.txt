@@ -3,3 +3,4 @@ python-dotenv
 aiohttp
 pynacl
 aiosqlite
+aiohttp
