@@ -8,21 +8,21 @@ from discord.ext import commands
 
 log = logging.getLogger("bot")
 
-from utils.permissions import is_owner_slash
+from utils.permissions import has_role_slash
 
 class Control(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @app_commands.command(name="reload", description="Reload bot")
-    @is_owner_slash()
+    @has_role_slash()
     async def reload(self, interaction: discord.Interaction):
         await interaction.response.send_message("♻️ Reloading bot...")
         await self.bot.close()
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
     @app_commands.command(name="shutdown", description="Shutdown bot")
-    @is_owner_slash()
+    @has_role_slash()
     async def shutdown(self, interaction: discord.Interaction):
         await interaction.response.send_message("🔌 Bot shutting down...")
         await asyncio.sleep(1)

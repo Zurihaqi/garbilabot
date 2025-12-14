@@ -1,10 +1,14 @@
 import discord
 from discord import app_commands
-from .constants import OWNER_ID, ALLOWED_MATH
+from .constants import ALLOWED_MATH, ROLE_ID
 
-def is_owner_slash():
+def has_role_slash():
+    """Check if the user has a specific role (by ID)"""
     def predicate(interaction: discord.Interaction) -> bool:
-        return interaction.user.id == OWNER_ID
+        # Make sure the interaction user is a Member (not a User)
+        if isinstance(interaction.user, discord.Member):
+            return any(role.id == ROLE_ID for role in interaction.user.roles)
+        return False
     return app_commands.check(predicate)
 
 def safe_eval(expression: str):

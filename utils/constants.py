@@ -6,7 +6,7 @@ load_dotenv()
 TOKEN          = os.getenv("DISCORD_BOT_TOKEN")
 GIPHY_API_KEY  = os.getenv("GIPHY_API_KEY")
 MC_SERVER_PATH = os.getenv("MC_SERVER_PATH")
-OWNER_ID       = int(os.getenv("OWNER_ID"))
+ROLE_ID       = int(os.getenv("ROLE_ID"))
 
 LUCK_STATUSES = [
     ("🍀", "Main Character Energy - Lock in"),

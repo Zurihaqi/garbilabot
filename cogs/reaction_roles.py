@@ -2,7 +2,7 @@ import discord
 import aiosqlite
 from discord import app_commands
 from discord.ext import commands
-from utils.permissions import is_owner_slash
+from utils.permissions import has_role_slash
 
 DB_PATH = "reaction_roles.db"
 
@@ -67,7 +67,7 @@ class ReactionRoles(commands.Cog):
     # -------------------------------------------------
 
     @app_commands.command(name="reactionrole_add", description="Add a reaction role")
-    @is_owner_slash()
+    @has_role_slash()
     async def add(
         self,
         interaction: discord.Interaction,
@@ -109,7 +109,7 @@ class ReactionRoles(commands.Cog):
     # -------------------------------------------------
 
     @app_commands.command(name="reactionrole_list", description="List all reaction roles")
-    @is_owner_slash()
+    @has_role_slash()
     async def list_roles(self, interaction: discord.Interaction):
         cursor = await self.db.execute(
             """
@@ -253,7 +253,7 @@ class ReactionRoles(commands.Cog):
     # -------------------------------------------------
 
     @app_commands.command(name="reactionrole_debug", description="Debug reaction roles")
-    @is_owner_slash()
+    @has_role_slash()
     async def debug(self, interaction: discord.Interaction):
         """Debug command to see what's in the database"""
         cursor = await self.db.execute(
@@ -288,7 +288,7 @@ class ReactionRoles(commands.Cog):
         await interaction.response.send_message("\n".join(lines), ephemeral=True)
 
     @app_commands.command(name="reactionrole_remove", description="Remove a reaction role")
-    @is_owner_slash()
+    @has_role_slash()
     async def remove(self, interaction: discord.Interaction, message_id: str, emoji: str):
         emoji_key = normalize_emoji(discord.PartialEmoji.from_str(emoji))
 
@@ -310,7 +310,7 @@ class ReactionRoles(commands.Cog):
     # -------------------------------------------------
 
     @app_commands.command(name="reactionrole_edit", description="Edit a reaction role")
-    @is_owner_slash()
+    @has_role_slash()
     async def edit(
         self,
         interaction: discord.Interaction,
