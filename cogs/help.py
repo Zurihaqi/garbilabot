@@ -14,7 +14,6 @@ class Help(commands.Cog):
         """Display the help menu."""
         view = HelpMenuView(self.bot)
         embed = view.main_embed()
-
         await interaction.response.send_message(
             embed=embed,
             view=view,
@@ -26,32 +25,36 @@ class HelpMenuView(discord.ui.View):
         super().__init__(timeout=180)
         self.bot = bot
 
-        for cog_name, cog in bot.cogs.items():
-            label = cog_name.capitalize()
-            self.add_item(HelpButton(cog_name, label))
+        options = [
+            discord.SelectOption(
+                label=cog_name.capitalize(),
+                value=cog_name,
+                description=f"View commands for {cog_name.capitalize()}"
+            )
+            for cog_name in bot.cogs.keys()
+        ]
+
+        self.add_item(HelpSelect(bot, options))
 
     def main_embed(self) -> discord.Embed:
         embed = discord.Embed(
             title="📖 Help Menu",
-            description="Select a category below to view available commands.",
+            description="Select a category from the dropdown below to view commands.",
             color=discord.Color.blurple()
         )
         embed.set_footer(
-            text="Use the buttons to browse commands."
+            text="Use the dropdown to browse commands."
         )
         return embed
 
-class HelpButton(discord.ui.Button):
-    def __init__(self, cog_name: str, label: str):
-        super().__init__(
-            label=label,
-            style=discord.ButtonStyle.secondary
-        )
-        self.cog_name = cog_name
+class HelpSelect(discord.ui.Select):
+    def __init__(self, bot: commands.Bot, options: list):
+        super().__init__(placeholder="Choose a category...", options=options)
+        self.bot = bot
 
     async def callback(self, interaction: discord.Interaction):
-        bot = self.view.bot
-        cog = bot.get_cog(self.cog_name)
+        cog_name = self.values[0]
+        cog = self.bot.get_cog(cog_name)
 
         if not cog:
             await interaction.response.send_message(
@@ -61,7 +64,7 @@ class HelpButton(discord.ui.Button):
             return
 
         embed = discord.Embed(
-            title=f"📂 {self.cog_name.capitalize()} Commands",
+            title=f"📂 {cog_name.capitalize()} Commands",
             color=discord.Color.teal()
         )
 
@@ -76,10 +79,7 @@ class HelpButton(discord.ui.Button):
             text="Use /<command> to run a command."
         )
 
-        await interaction.response.edit_message(
-            embed=embed,
-            view=self.view
-        )
+        await interaction.response.edit_message(embed=embed, view=self.view)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Help(bot))
