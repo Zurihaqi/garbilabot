@@ -1,47 +1,50 @@
-from typing import List, Dict, Any, Optional
-from services.inventory_service import InventoryService
+from typing import Optional, Dict, Any
 from database.db_manager import DatabaseManager
 
 class ShopService:
     """Handles shop operations"""
     
     @staticmethod
-    def get_all_items() -> List[Dict]:
+    async def get_all_items() -> list[Dict]:
         """Get all shop items"""
-        with DatabaseManager.get_connection() as conn:
-            c = conn.cursor()
-            c.execute("""
+        conn = await DatabaseManager.get_connection()
+        try:
+            async with conn.execute("""
                 SELECT item, description, price, item_type, bonus_value, stat_bonus, level_req
                 FROM shop ORDER BY level_req, price
-            """)
-            return [dict(row) for row in c.fetchall()]
+            """) as cursor:
+                rows = await cursor.fetchall()
+                return [dict(row) for row in rows]
+        finally:
+            await conn.close()
     
     @staticmethod
-    def get_item(item_name: str) -> Optional[Dict]:
+    async def get_item(item_name: str) -> Optional[Dict]:
         """Get specific item"""
-        with DatabaseManager.get_connection() as conn:
-            c = conn.cursor()
-            c.execute("""
+        conn = await DatabaseManager.get_connection()
+        try:
+            async with conn.execute("""
                 SELECT item, description, price, item_type, stat_bonus, bonus_value, level_req
                 FROM shop WHERE item = ?
-            """, (item_name,))
-            row = c.fetchone()
-            return dict(row) if row else None
+            """, (item_name,)) as cursor:
+                row = await cursor.fetchone()
+                return dict(row) if row else None
+        finally:
+            await conn.close()
     
     @staticmethod
-    def purchase_item(user_id: int, item_name: str) -> Dict[str, Any]:
+    async def purchase_item(user_id: int, item_name: str) -> Dict[str, Any]:
         """Purchase an item"""
-        with DatabaseManager.get_connection() as conn:
-            c = conn.cursor()
-            
+        conn = await DatabaseManager.get_connection()
+        try:
             # Get item
-            item = ShopService.get_item(item_name)
+            item = await ShopService.get_item(item_name)
             if not item:
                 return {'success': False, 'error': 'Item not found'}
             
             # Get user
-            c.execute("SELECT balance, level FROM users WHERE user_id = ?", (user_id,))
-            user = c.fetchone()
+            async with conn.execute("SELECT balance, level FROM users WHERE user_id = ?", (user_id,)) as cursor:
+                user = await cursor.fetchone()
             
             # Validate
             if user['level'] < item['level_req']:
@@ -51,8 +54,17 @@ class ShopService:
                 return {'success': False, 'error': f"Need {item['price']:,} coins"}
             
             # Purchase
-            c.execute("UPDATE users SET balance = balance - ? WHERE user_id = ?",
-                     (item['price'], user_id))
-            InventoryService.add_item(user_id, item_name, 1)
+            await conn.execute("UPDATE users SET balance = balance - ? WHERE user_id = ?",
+                             (item['price'], user_id))
             
+            # Add to inventory
+            await conn.execute("""
+                INSERT INTO inventory (user_id, item, quantity)
+                VALUES (?, ?, 1)
+                ON CONFLICT(user_id, item) DO UPDATE SET quantity = quantity + 1
+            """, (user_id, item_name))
+            
+            await conn.commit()
             return {'success': True, 'item': item}
+        finally:
+            await conn.close()

@@ -5,6 +5,7 @@ from discord.ext import commands
 from services.user_service import UserService
 from services.inventory_service import InventoryService
 from services.shop_service import ShopService
+from utils.pagination import paginate_shop
 
 class ShopCommands(commands.Cog):
     """Shop and inventory commands"""
@@ -16,7 +17,7 @@ class ShopCommands(commands.Cog):
     async def shop(self, interaction: discord.Interaction, item: str = None):
         if item:
             # Purchase item
-            result = ShopService.purchase_item(interaction.user.id, item)
+            result = await ShopService.purchase_item(interaction.user.id, item)
             
             if not result['success']:
                 await interaction.response.send_message(f"❌ {result['error']}", ephemeral=True)
@@ -39,36 +40,13 @@ class ShopCommands(commands.Cog):
             await interaction.response.send_message(embed=embed)
         else:
             # List shop
-            items = ShopService.get_all_items()
-            
+            items = await ShopService.get_all_items()
             if not items:
                 await interaction.response.send_message("🛒 Shop empty.", ephemeral=True)
                 return
+
+            await paginate_shop(interaction, items)
             
-            embed = Embed(title="🛒 Shop", color=Color.blue())
-            weapons, armor, consumables = [], [], []
-            
-            for item_data in items:
-                bonus = f"+{item_data['bonus_value']} {item_data['stat_bonus']}" if item_data['item_type'] != 'consumable' else ""
-                txt = f"**{item_data['item']}** - {item_data['price']:,} coins (Lv{item_data['level_req']})\n*{item_data['description']}* {bonus}\n"
-                
-                if item_data['item_type'] == 'weapon':
-                    weapons.append(txt)
-                elif item_data['item_type'] == 'armor':
-                    armor.append(txt)
-                else:
-                    consumables.append(txt)
-            
-            if weapons:
-                embed.add_field(name="⚔️ Weapons", value="".join(weapons), inline=False)
-            if armor:
-                embed.add_field(name="🛡️ Armor", value="".join(armor), inline=False)
-            if consumables:
-                embed.add_field(name="🧪 Consumables", value="".join(consumables), inline=False)
-            
-            embed.set_footer(text="Use /shop <item> to buy")
-            await interaction.response.send_message(embed=embed)
-    
     @app_commands.command(name="inventory", description="View inventory")
     async def inventory(self, interaction: discord.Interaction):
         items = InventoryService.get_inventory(interaction.user.id)
@@ -111,7 +89,7 @@ class ShopCommands(commands.Cog):
     @app_commands.command(name="use", description="Use consumable")
     async def use_item(self, interaction: discord.Interaction, item: str):
         # Get item info
-        shop_item = ShopService.get_item(item)
+        shop_item = await ShopService.get_item(item)
         if not shop_item:
             await interaction.response.send_message("❌ Item not found.", ephemeral=True)
             return

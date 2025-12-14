@@ -19,15 +19,16 @@ class EconomyCommands(commands.Cog):
         user_id = interaction.user.id
         today = datetime.now().date().isoformat()
         
-        UserService.ensure_user_exists(user_id, interaction.user.name)
-        user = UserService.get_user(user_id)
+        await UserService.ensure_user_exists(user_id, interaction.user.name)
+        user = await UserService.get_user(user_id)
         
-        with DatabaseManager.get_connection() as conn:
-            c = conn.cursor()
-            c.execute("SELECT last_daily FROM users WHERE user_id=?", (user_id,))
-            row = c.fetchone()
+        # Fix: Use async database operations
+        conn = await DatabaseManager.get_connection()
+        try:
+            async with conn.execute("SELECT last_daily FROM users WHERE user_id=?", (user_id,)) as cursor:
+                row = await cursor.fetchone()
             
-            if row['last_daily'] == today:
+            if row and row['last_daily'] == today:
                 await interaction.response.send_message("⚠️ Already claimed today!", ephemeral=True)
                 return
             
@@ -35,10 +36,13 @@ class EconomyCommands(commands.Cog):
             bonus = user.level * 10
             total = base + bonus
             
-            c.execute(
+            await conn.execute(
                 "UPDATE users SET balance = balance + ?, last_daily = ? WHERE user_id = ?",
                 (total, today, user_id)
             )
+            await conn.commit()
+        finally:
+            await conn.close()
         
         embed = Embed(
             title="💰 Daily Reward!",
@@ -50,7 +54,7 @@ class EconomyCommands(commands.Cog):
     
     @app_commands.command(name="heal", description="Fully restore HP (costs coins)")
     async def heal(self, interaction: discord.Interaction):
-        user = UserService.get_user(interaction.user.id)
+        user = await UserService.get_user(interaction.user.id)
         
         if not user:
             await interaction.response.send_message("❌ Profile not found!", ephemeral=True)
@@ -66,7 +70,7 @@ class EconomyCommands(commands.Cog):
             await interaction.response.send_message(f"⚠️ Need {cost} coins!", ephemeral=True)
             return
         
-        UserService.update_user_stats(
+        await UserService.update_user_stats(
             interaction.user.id,
             hp=user.max_hp,
             balance=user.balance - cost
@@ -75,3 +79,7 @@ class EconomyCommands(commands.Cog):
         await interaction.response.send_message(
             f"✨ Fully healed for {cost} coins! HP: {user.max_hp}/{user.max_hp}"
         )
+
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(EconomyCommands(bot))

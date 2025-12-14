@@ -4,3 +4,6 @@ aiohttp
 pynacl
 aiosqlite
 aiohttp
+pillow
+pilmoji
+emoji==1.7.0

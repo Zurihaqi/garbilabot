@@ -1,35 +1,21 @@
-import sqlite3
-from contextlib import contextmanager
+import aiosqlite
 from database.shop_data import ShopData
+from database.quest_data import QuestData
 
 DB_PATH = "rpg.db"
 
 class DatabaseManager:
-    """Handles all database operations with connection management"""
-    
+    """Handles all database operations asynchronously"""
+
     @staticmethod
-    @contextmanager
-    def get_connection():
-        """Context manager for database connections"""
-        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-        conn.row_factory = sqlite3.Row
-        try:
-            yield conn
-            conn.commit()
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
-            conn.close()
-    
-    @staticmethod
-    def init_db():
-        """Initialize database schema"""
-        with DatabaseManager.get_connection() as conn:
-            c = conn.cursor()
-            
+    async def init_db():
+        """Initialize database schema asynchronously"""
+        async with aiosqlite.connect(DB_PATH) as conn:
+            conn.row_factory = aiosqlite.Row
+            await conn.execute("PRAGMA journal_mode=WAL")
+
             # Users table
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY,
                 username TEXT,
@@ -50,9 +36,9 @@ class DatabaseManager:
                 boss_kills INTEGER DEFAULT 0
             )
             """)
-            
+
             # Inventory table
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS inventory (
                 user_id INTEGER,
                 item TEXT,
@@ -61,9 +47,9 @@ class DatabaseManager:
                 PRIMARY KEY(user_id, item)
             )
             """)
-            
+
             # Shop table
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS shop (
                 item TEXT PRIMARY KEY,
                 description TEXT,
@@ -74,31 +60,33 @@ class DatabaseManager:
                 level_req INTEGER DEFAULT 1
             )
             """)
-            
+
             # Quests table
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS quests (
                 quest_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 description TEXT,
                 reward_coins INTEGER,
                 reward_xp INTEGER,
-                requirement_level INTEGER DEFAULT 1
+                requirement_level INTEGER DEFAULT 1,
+                quest_type TEXT DEFAULT 'adventure'
             )
             """)
-            
+
             # User quests
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS user_quests (
                 user_id INTEGER,
                 quest_id INTEGER,
                 status TEXT DEFAULT 'active',
+                progress INTEGER DEFAULT 0,
                 PRIMARY KEY(user_id, quest_id)
             )
             """)
-            
+
             # PvP history
-            c.execute("""
+            await conn.execute("""
             CREATE TABLE IF NOT EXISTS pvp (
                 battle_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 attacker_id INTEGER,
@@ -109,8 +97,25 @@ class DatabaseManager:
                 defender_power INTEGER
             )
             """)
-            
+
+            # Initialize quests if empty
+            async with conn.execute("SELECT COUNT(*) FROM quests") as cursor:
+                row = await cursor.fetchone()
+                if row[0] == 0:
+                    await QuestData.initialize_quests(conn)
+
             # Initialize shop if empty
-            c.execute("SELECT COUNT(*) FROM shop")
-            if c.fetchone()[0] == 0:
-                ShopData.initialize_shop(c)
+            async with conn.execute("SELECT COUNT(*) FROM shop") as cursor:
+                row = await cursor.fetchone()
+                if row[0] == 0:
+                    await ShopData.initialize_shop(conn)
+
+            await conn.commit()
+
+    @staticmethod
+    async def get_connection():
+        """Return a database connection"""
+        conn = await aiosqlite.connect(DB_PATH)
+        conn.row_factory = aiosqlite.Row
+        await conn.execute("PRAGMA journal_mode=WAL")
+        return conn
