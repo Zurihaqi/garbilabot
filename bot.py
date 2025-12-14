@@ -76,7 +76,7 @@ def healthcheck(request):
 
 async def start_healthcheck_server():
     app = web.Application()
-    app.add_routes([web.get("/kaithheathcheck", healthcheck)])
+    app.add_routes([web.get("/kaithhealthcheck", healthcheck)])
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", 8080)
@@ -84,8 +84,11 @@ async def start_healthcheck_server():
     logger.info("🌐 Health check running on http://0.0.0.0:8080/kaithheathcheck")
 
 async def main():
-    healthcheck_task = asyncio.create_task(start_healthcheck_server())
+    task = asyncio.create_task(start_healthcheck_server())
 
+    await task
+
+    # Load cogs
     async with bot:
         for cog in COGS:
             try:
@@ -94,19 +97,12 @@ async def main():
             except Exception:
                 logger.exception("❌ Failed to load %s", cog)
 
-        if not TOKEN:
-            logger.critical("DISCORD_BOT_TOKEN is missing.")
-            raise SystemExit("DISCORD_BOT_TOKEN is missing.")
-
-        await bot.start(TOKEN)
-        healthcheck_task.cancel()
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.warning("Shutdown requested by user (Ctrl+C).")
-    except Exception:
-        logger.exception("❌ Fatal error")
-    finally:
-        logger.info("🛑 Shutting down...")
+    while True:
+        try:
+            await bot.start(TOKEN)
+        except KeyboardInterrupt:
+            logger.warning("Shutdown requested by user (Ctrl+C).")
+            break
+        except Exception:
+            logger.exception("❌ Bot crashed, restarting in 5 seconds...")
+            await asyncio.sleep(5)
